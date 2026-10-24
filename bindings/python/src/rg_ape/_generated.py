@@ -137,6 +137,97 @@ _OPERATIONS = json.loads(r'''{
             "multiple": false,
             "value_optional": false,
             "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-F",
+              "--fixed-strings"
+            ],
+            "primary_flag": "--fixed-strings",
+            "api_name": "fixed_strings",
+            "boolean": true,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-w",
+              "--word-regexp"
+            ],
+            "primary_flag": "--word-regexp",
+            "api_name": "word_regexp",
+            "boolean": true,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-C",
+              "--context"
+            ],
+            "primary_flag": "--context",
+            "api_name": "context",
+            "boolean": false,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-A",
+              "--after-context"
+            ],
+            "primary_flag": "--after-context",
+            "api_name": "after_context",
+            "boolean": false,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-B",
+              "--before-context"
+            ],
+            "primary_flag": "--before-context",
+            "api_name": "before_context",
+            "boolean": false,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-t",
+              "--type"
+            ],
+            "primary_flag": "--type",
+            "api_name": "file_type",
+            "boolean": false,
+            "required": false,
+            "multiple": true,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-v",
+              "--invert-match"
+            ],
+            "primary_flag": "--invert-match",
+            "api_name": "invert_match",
+            "boolean": true,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
           }
         ]
       }
@@ -164,6 +255,13 @@ def search(
     hidden=False,
     no_ignore=False,
     pcre2=False,
+    fixed_strings=False,
+    word_regexp=False,
+    context=None,
+    after_context=None,
+    before_context=None,
+    file_type=None,
+    invert_match=False,
 ):
     return _CLIENT.invoke(
         'search',
@@ -178,6 +276,13 @@ def search(
             'hidden': hidden,
             'no_ignore': no_ignore,
             'pcre2': pcre2,
+            'fixed_strings': fixed_strings,
+            'word_regexp': word_regexp,
+            'context': context,
+            'after_context': after_context,
+            'before_context': before_context,
+            'file_type': file_type,
+            'invert_match': invert_match,
         },
     )
 

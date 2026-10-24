@@ -133,6 +133,97 @@ const OPERATIONS = {
             "multiple": false,
             "value_optional": false,
             "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-F",
+              "--fixed-strings"
+            ],
+            "primary_flag": "--fixed-strings",
+            "api_name": "fixedStrings",
+            "boolean": true,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-w",
+              "--word-regexp"
+            ],
+            "primary_flag": "--word-regexp",
+            "api_name": "wordRegexp",
+            "boolean": true,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-C",
+              "--context"
+            ],
+            "primary_flag": "--context",
+            "api_name": "context",
+            "boolean": false,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-A",
+              "--after-context"
+            ],
+            "primary_flag": "--after-context",
+            "api_name": "afterContext",
+            "boolean": false,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-B",
+              "--before-context"
+            ],
+            "primary_flag": "--before-context",
+            "api_name": "beforeContext",
+            "boolean": false,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-t",
+              "--type"
+            ],
+            "primary_flag": "--type",
+            "api_name": "fileType",
+            "boolean": false,
+            "required": false,
+            "multiple": true,
+            "value_optional": false,
+            "runtime_owned": false
+          },
+          {
+            "flags": [
+              "-v",
+              "--invert-match"
+            ],
+            "primary_flag": "--invert-match",
+            "api_name": "invertMatch",
+            "boolean": true,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
           }
         ]
       }

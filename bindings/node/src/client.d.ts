@@ -23,6 +23,13 @@ export interface SearchParameters {
   hidden?: boolean;
   noIgnore?: boolean;
   pcre2?: boolean;
+  fixedStrings?: boolean;
+  wordRegexp?: boolean;
+  context?: number;
+  afterContext?: number;
+  beforeContext?: number;
+  fileType?: string | readonly string[];
+  invertMatch?: boolean;
 }
 
 export function search(

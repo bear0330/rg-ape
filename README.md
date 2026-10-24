@@ -57,17 +57,44 @@ String text = RgAPEBinding.search(
         .build());
 ```
 
-The reviewed contract is [rg.apebind.yaml](rg.apebind.yaml). `search` also
-accepts `ignore_case`, `files_with_matches`, `json`, `glob`, `hidden`,
-`no_ignore`, and `pcre2`. Python uses those `snake_case` names. Node.js and
-Java use `ignoreCase`, `filesWithMatches`, `lineNumber`, and `noIgnore`.
-`pcre2` is the same name in all three. The bundled `rg.com` links PCRE2,
-so a backreference such as `(\w+) \1` works when that flag is set.
+The reviewed contract is [rg.apebind.yaml](rg.apebind.yaml). `search` accepts
+either those named parameters or raw `rg` argv. One call cannot pass both;
+that raises before `rg` runs.
+
+```python
+print(search("a.c", "notes", fixed_strings=True, line_number=True))
+print(search(raw=["-n", "-F", "a.c", "notes"]))
+print(search(["-n", "-F", "a.c", "notes"]))
+```
+
+```js
+console.log(await search(['-n', '-F', 'a.c', 'notes']));
+console.log(await search({ raw: ['-n', '-F', 'a.c', 'notes'] }));
+```
+
+```java
+RgAPEBinding.search(List.of("-n", "-F", "a.c", "notes"));
+```
+
+An explicit false flag still counts as a named parameter, so
+`search(raw=["ape"], line_number=False)` raises too. Java does the same when
+`lineNumber(false)` is combined with `raw` on the builder.
+
+Named parameters are `ignore_case`, `line_number`, `files_with_matches`,
+`json`, `glob`, `hidden`, `no_ignore`, `pcre2`, `fixed_strings`,
+`word_regexp`, `context`, `after_context`, `before_context`, `file_type`,
+and `invert_match`. Python uses those `snake_case` names. Node.js and Java
+use `ignoreCase`, `filesWithMatches`, `lineNumber`, `noIgnore`,
+`fixedStrings`, `wordRegexp`, `afterContext`, `beforeContext`, `fileType`,
+and `invertMatch`. `pcre2`, `json`, `glob`, and `context` are the same name
+in all three. The bundled `rg.com` links PCRE2, so a backreference such as
+`(\w+) \1` works when that flag is set.
 
 A library call is not a terminal, so `rg` hides line numbers unless that flag
-is set. No matches make the binding raise. Each binding's `prepare` script
-copies the root `rg.com` into the package before the call above can run from
-this tree.
+is set. No matches make the binding raise. `raw()` still returns the process
+result. A raw-style `search` returns the same stripped text as the named
+call. Each binding's `prepare` script copies the root `rg.com` into the
+package before the call above can run from this tree.
 
 ## Build `rg.com`
 
@@ -93,8 +120,13 @@ uses the finished binary. Regenerate the bindings with the APEBind binary in
   --ape rg.com --lang java -o bindings/java
 ```
 
-Regenerating replaces the generated sources under `bindings/`. The tests live
-outside those generated trees.
+Regenerating replaces the generated sources under `bindings/`. It also
+restores the generated `search` export in
+`bindings/python/src/rg_ape/__init__.py`, `bindings/node/src/index.js`,
+`bindings/node/src/index.d.ts`, and `RgAPEBinding.java`. Point Python and
+Node `search` back at `search_call`, and reapply the Java raw overload plus
+the builder guard, before committing. The tests live outside those generated
+trees.
 
 ## Test
 

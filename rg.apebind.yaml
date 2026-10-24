@@ -83,6 +83,62 @@ commands:
         value_optional: false
         choices: []
         help: Use the PCRE2 engine. Backreferences need this flag.
+      - flags: [-F, --fixed-strings]
+        api_name: fixed_strings
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Treat the pattern as a literal string.
+      - flags: [-w, --word-regexp]
+        api_name: word_regexp
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Only match when the pattern is a whole word.
+      - flags: [-C, --context]
+        api_name: context
+        value_type: integer
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Show this many lines before and after each match.
+      - flags: [-A, --after-context]
+        api_name: after_context
+        value_type: integer
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Show this many lines after each match.
+      - flags: [-B, --before-context]
+        api_name: before_context
+        value_type: integer
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Show this many lines before each match.
+      - flags: [-t, --type]
+        api_name: file_type
+        value_type: string
+        required: false
+        multiple: true
+        value_optional: false
+        choices: []
+        help: Search only files of this type, such as py or rust. Repeat for more than one type.
+      - flags: [-v, --invert-match]
+        api_name: invert_match
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Print lines that do not match.
 operations:
   - name: search
     command: []
