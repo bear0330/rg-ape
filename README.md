@@ -23,6 +23,26 @@ No matches make `rg` exit 1.
 
 ## Bindings
 
+Install one release asset. The package already contains `rg.com`. Python needs 3.11 or newer, Node.js 18 or newer, and Java a JDK 17.
+
+```sh
+python3 -m pip install https://github.com/bear0330/rg-ape/releases/download/v0.2.0/rg_ape-0.2.0-py3-none-any.whl
+```
+
+```sh
+npm install https://github.com/bear0330/rg-ape/releases/download/v0.2.0/rg-ape-0.2.0.tgz
+```
+
+The Node package is ESM. Import it from a `.mjs` file, or set `"type": "module"`.
+
+```sh
+curl -fsSL -o rg-ape-0.2.0.jar https://github.com/bear0330/rg-ape/releases/download/v0.2.0/rg-ape-0.2.0.jar
+javac --release 17 -cp rg-ape-0.2.0.jar Example.java
+java -cp "rg-ape-0.2.0.jar:." Example
+```
+
+On Windows the classpath separator is `;`. The Java sample below has to sit in a class with `main`.
+
 Python:
 
 ```python
