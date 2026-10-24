@@ -1,9 +1,15 @@
 # rg-ape
 
-ripgrep 15.2.0 as a portable CLI, and from Python, Node.js, or Java.
+ripgrep 15.2.0 in one `rg.com` file, and from Python, Node.js, or Java.
 
-`rg-ape` takes a finished Cosmopolitan `rg.com` and exposes the same search
-through language-native bindings generated with
+That file is an Actually Portable Executable (APE), built with
+[Cosmopolitan](https://github.com/jart/cosmopolitan). One download holds the
+x86-64 and ARM64 programs for Linux, macOS, and Windows. Run `rg.com`
+directly. The Python, Node.js, and Java packages carry the same file and call
+it for you.
+
+`rg-ape` takes that finished file and exposes the same search through
+language-native bindings generated with
 [APEBind](https://github.com/nuwainfo/apebind). This repository does not build
 `rg.com`.
 
