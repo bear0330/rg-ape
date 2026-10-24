@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import errno
+import os
 import subprocess
 import tempfile
 import unittest
@@ -68,7 +69,9 @@ class RgComTests(unittest.TestCase):
             note.write_text("beta\n", encoding="utf-8")
             result = self.run_rg("ape", directory)
 
-        self.assertEqual(result.returncode, 1)
+        # Cosmopolitan encodes Windows exit status 1 as 256 in subprocess.
+        expected_return_code = 256 if os.name == "nt" else 1
+        self.assertEqual(result.returncode, expected_return_code)
         self.assertEqual(result.stdout, "")
 
 
