@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+target/
+rg.com
+bindings/python/src/rg_ape/bin/
+bindings/node/src/bin/
+bindings/java/src/main/resources/apebind/rg.com

@@ -1,0 +1,15 @@
+{
+  "apebindGenerated": true,
+  "name": "rg-ape",
+  "version": "0.1.0",
+  "description": "Generated APEBind wrapper for rg-ape",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "files": [
+    "src"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

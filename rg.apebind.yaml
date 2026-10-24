@@ -1,0 +1,84 @@
+schema_version: 1
+ape:
+  name: rg-ape
+  binary: rg.com
+commands:
+  - path: []
+    summary: Search files for a regular expression.
+    positionals:
+      - name: PATTERN
+        api_name: pattern
+        value_type: string
+        required: true
+        multiple: false
+        help: Regular expression to search for.
+      - name: PATH
+        api_name: path
+        value_type: path
+        required: false
+        multiple: true
+        help: File or directory to search. rg searches the working directory when this is omitted.
+    options:
+      - flags: [-i, --ignore-case]
+        api_name: ignore_case
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Search case insensitively.
+      - flags: [-n, --line-number]
+        api_name: line_number
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Show line numbers. A library call does not have a terminal, so rg omits them unless this is set.
+      - flags: [-l, --files-with-matches]
+        api_name: files_with_matches
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Print only the paths of files that contain a match.
+      - flags: [--json]
+        api_name: json
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Print matches as JSON lines.
+      - flags: [-g, --glob]
+        api_name: glob
+        value_type: string
+        required: false
+        multiple: true
+        value_optional: false
+        choices: []
+        help: Include or exclude files by glob. Repeat the flag for more than one glob.
+      - flags: [--hidden]
+        api_name: hidden
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Search hidden files and directories.
+      - flags: [--no-ignore]
+        api_name: no_ignore
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Do not respect ignore files.
+operations:
+  - name: search
+    command: []
+    execution: oneshot
+    result:
+      format: text
+      strip: true
