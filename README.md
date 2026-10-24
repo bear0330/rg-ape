@@ -122,7 +122,8 @@ uses the finished binary. Regenerate the bindings with the APEBind binary in
 
 Regenerating replaces the generated sources under `bindings/`, including
 `bindings/python/README.md`, `bindings/node/README.md`, and
-`bindings/java/README.md`. It also restores the generated `search` export in
+`bindings/java/README.md`. It also resets `pyproject.toml`, `package.json`,
+and `pom.xml` to version 0.1.0, and restores the generated `search` export in
 `bindings/python/src/rg_ape/__init__.py`, `bindings/node/src/index.js`,
 `bindings/node/src/index.d.ts`, and `RgAPEBinding.java`. Point Python and
 Node `search` back at `search_call`, reapply the Java raw overload plus the
