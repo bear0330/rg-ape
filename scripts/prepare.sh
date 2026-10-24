@@ -1,23 +1,30 @@
 #!/bin/sh
-# Copy an rg.com built by rust-ape into the generated binding packages.
 set -eu
 
-root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-src=${RG_APE_RG:-}
+repository_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+target_path="$repository_root/rg.com"
+version=${RG_APE_VERSION:-}
+force_download=${RG_APE_FORCE_DOWNLOAD:-0}
 
-if [ -z "$src" ] || [ ! -f "$src" ]; then
-  printf '%s\n' 'Set RG_APE_RG to the rg.com produced by rust-ape collectbuild cli/rg' >&2
+if [ -f "$target_path" ] && [ "$force_download" != "1" ]; then
+  printf 'Using cached %s\n' "$target_path"
+  exit 0
+fi
+
+if [ -n "$version" ]; then
+  download_url="https://github.com/bear0330/rg-ape/releases/download/$version/rg.com"
+else
+  download_url='https://github.com/bear0330/rg-ape/releases/latest/download/rg.com'
+fi
+
+temporary_path="$target_path.download"
+printf 'Downloading %s\n' "$download_url"
+curl --fail --location --retry 3 --output "$temporary_path" "$download_url"
+
+if [ ! -s "$temporary_path" ]; then
+  printf '%s\n' 'Downloaded rg.com is empty' >&2
   exit 1
 fi
 
-install_binary() {
-  destination=$1
-  mkdir -p "$(dirname -- "$destination")"
-  cp -f "$src" "$destination"
-  chmod +x "$destination"
-}
-
-install_binary "$root/bindings/python/src/rg_ape/bin/rg.com"
-install_binary "$root/bindings/node/src/bin/rg.com"
-install_binary "$root/bindings/java/src/main/resources/apebind/rg.com"
-printf 'Installed %s\n' "$src"
+mv -f "$temporary_path" "$target_path"
+chmod +x "$target_path"
