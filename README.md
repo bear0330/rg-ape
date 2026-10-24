@@ -58,9 +58,11 @@ String text = RgAPEBinding.search(
 ```
 
 The reviewed contract is [rg.apebind.yaml](rg.apebind.yaml). `search` also
-accepts `ignore_case`, `files_with_matches`, `json`, `glob`, `hidden`, and
-`no_ignore`. Python uses those `snake_case` names. Node.js and Java use
-`ignoreCase`, `filesWithMatches`, `lineNumber`, and `noIgnore`.
+accepts `ignore_case`, `files_with_matches`, `json`, `glob`, `hidden`,
+`no_ignore`, and `pcre2`. Python uses those `snake_case` names. Node.js and
+Java use `ignoreCase`, `filesWithMatches`, `lineNumber`, and `noIgnore`.
+`pcre2` is the same name in all three. The bundled `rg.com` links PCRE2,
+so a backreference such as `(\w+) \1` works when that flag is set.
 
 A library call is not a terminal, so `rg` hides line numbers unless that flag
 is set. No matches make the binding raise. Each binding's `prepare` script

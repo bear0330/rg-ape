@@ -75,6 +75,14 @@ commands:
         value_optional: false
         choices: []
         help: Do not respect ignore files.
+      - flags: [--pcre2]
+        api_name: pcre2
+        value_type: boolean
+        required: false
+        multiple: false
+        value_optional: false
+        choices: []
+        help: Use the PCRE2 engine. Backreferences need this flag.
 operations:
   - name: search
     command: []

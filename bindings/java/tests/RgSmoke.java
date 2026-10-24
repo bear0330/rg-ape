@@ -15,6 +15,17 @@ public class RgSmoke {
                 .lineNumber(true)
                 .build());
         require(text.contains("note.txt:1:alpha ape"), text);
+
+        Path duplicates = Files.createTempDirectory("rg-ape-");
+        Files.writeString(duplicates.resolve("dup.txt"), "ape ape\nbeta\n");
+        String backreference = RgAPEBinding.search(
+            RgAPEBinding.SearchParameters.builder()
+                .pattern("(\\w+) \\1")
+                .path(duplicates)
+                .lineNumber(true)
+                .pcre2(true)
+                .build());
+        require(backreference.contains("dup.txt:1:ape ape"), backreference);
     }
 
     private static void require(boolean condition, String actual) {

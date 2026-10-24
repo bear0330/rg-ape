@@ -15,6 +15,16 @@ const text = await search({
 });
 assert.match(text, /note\.txt:1:alpha ape/);
 
+const dupDirectory = await mkdtemp(join(tmpdir(), 'rg-ape-'));
+await writeFile(join(dupDirectory, 'dup.txt'), 'ape ape\nbeta\n');
+const backreference = await search({
+  pattern: '(\\w+) \\1',
+  path: dupDirectory,
+  lineNumber: true,
+  pcre2: true,
+});
+assert.match(backreference, /dup\.txt:1:ape ape/);
+
 const empty = await mkdtemp(join(tmpdir(), 'rg-ape-'));
 await writeFile(join(empty, 'note.txt'), 'beta\n');
 await assert.rejects(

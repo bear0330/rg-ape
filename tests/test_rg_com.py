@@ -52,6 +52,16 @@ class RgComTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("note.txt:1:alpha ape", result.stdout)
 
+    def test_pcre2_backreference_matches(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            note = Path(directory) / "dup.txt"
+            note.write_text("ape ape\nbeta\n", encoding="utf-8")
+            result = self.run_rg("-n", "--pcre2", r"(\w+) \1", str(note))
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("ape ape", result.stdout)
+        self.assertIn("features:+pcre2", self.run_rg("--version").stdout)
+
     def test_no_match_exits_nonzero(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             note = Path(directory) / "note.txt"

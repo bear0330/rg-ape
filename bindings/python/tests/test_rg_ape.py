@@ -18,6 +18,14 @@ class RgApeTests(unittest.TestCase):
 
         self.assertIn("note.txt:1:alpha ape", text)
 
+    def test_pcre2_backreference_matches(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            note = Path(directory) / "dup.txt"
+            note.write_text("ape ape\nbeta\n", encoding="utf-8")
+            text = search(r"(\w+) \1", directory, line_number=True, pcre2=True)
+
+        self.assertIn("dup.txt:1:ape ape", text)
+
     def test_no_match_raises(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             note = Path(directory) / "note.txt"

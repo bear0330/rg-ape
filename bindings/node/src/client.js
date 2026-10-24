@@ -121,6 +121,18 @@ const OPERATIONS = {
             "multiple": false,
             "value_optional": false,
             "runtime_owned": false
+          },
+          {
+            "flags": [
+              "--pcre2"
+            ],
+            "primary_flag": "--pcre2",
+            "api_name": "pcre2",
+            "boolean": true,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
           }
         ]
       }

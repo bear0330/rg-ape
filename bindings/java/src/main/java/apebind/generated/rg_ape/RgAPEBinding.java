@@ -129,6 +129,18 @@ public final class RgAPEBinding {
                     "multiple": false,
                     "value_optional": false,
                     "runtime_owned": false
+                  },
+                  {
+                    "flags": [
+                      "--pcre2"
+                    ],
+                    "primary_flag": "--pcre2",
+                    "api_name": "pcre2",
+                    "boolean": true,
+                    "required": false,
+                    "multiple": false,
+                    "value_optional": false,
+                    "runtime_owned": false
                   }
                 ]
               }
@@ -170,6 +182,7 @@ public final class RgAPEBinding {
         private final List<String> glob;
         private final Boolean hidden;
         private final Boolean noIgnore;
+        private final Boolean pcre2;
 
         private SearchParameters(Builder builder) {
             this.pattern = builder.pattern;
@@ -181,6 +194,7 @@ public final class RgAPEBinding {
             this.glob = builder.glob;
             this.hidden = builder.hidden;
             this.noIgnore = builder.noIgnore;
+            this.pcre2 = builder.pcre2;
         }
 
         public static Builder builder() {
@@ -199,6 +213,7 @@ public final class RgAPEBinding {
             values.put("glob", glob);
             values.put("hidden", hidden);
             values.put("no_ignore", noIgnore);
+            values.put("pcre2", pcre2);
 
             return values;
         }
@@ -213,6 +228,7 @@ public final class RgAPEBinding {
             private List<String> glob;
             private Boolean hidden;
             private Boolean noIgnore;
+            private Boolean pcre2;
 
 
             public Builder pattern(String value) {
@@ -259,6 +275,10 @@ public final class RgAPEBinding {
             }
             public Builder noIgnore(Boolean value) {
                 this.noIgnore = value;
+                return this;
+            }
+            public Builder pcre2(Boolean value) {
+                this.pcre2 = value;
                 return this;
             }
 

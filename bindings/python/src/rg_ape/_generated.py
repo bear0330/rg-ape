@@ -125,6 +125,18 @@ _OPERATIONS = json.loads(r'''{
             "multiple": false,
             "value_optional": false,
             "runtime_owned": false
+          },
+          {
+            "flags": [
+              "--pcre2"
+            ],
+            "primary_flag": "--pcre2",
+            "api_name": "pcre2",
+            "boolean": true,
+            "required": false,
+            "multiple": false,
+            "value_optional": false,
+            "runtime_owned": false
           }
         ]
       }
@@ -151,6 +163,7 @@ def search(
     glob=None,
     hidden=False,
     no_ignore=False,
+    pcre2=False,
 ):
     return _CLIENT.invoke(
         'search',
@@ -164,6 +177,7 @@ def search(
             'glob': glob,
             'hidden': hidden,
             'no_ignore': no_ignore,
+            'pcre2': pcre2,
         },
     )
 

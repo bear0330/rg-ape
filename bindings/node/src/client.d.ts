@@ -22,6 +22,7 @@ export interface SearchParameters {
   glob?: string | readonly string[];
   hidden?: boolean;
   noIgnore?: boolean;
+  pcre2?: boolean;
 }
 
 export function search(
