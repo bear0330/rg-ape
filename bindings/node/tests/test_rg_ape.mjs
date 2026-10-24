@@ -115,6 +115,27 @@ await assert.rejects(
   search({ raw: ['missing-token', empty] }),
   APEProcessError,
 );
+assert.equal(
+  await search({ pattern: 'missing-token', path: empty, raiseOnNoMatch: false }),
+  '',
+);
+assert.equal(
+  await search({ raw: ['missing-token', empty], raiseOnNoMatch: false }),
+  '',
+);
+assert.equal(
+  await search(['missing-token', empty], { raiseOnNoMatch: false }),
+  '',
+);
+await assert.rejects(
+  search({
+    pattern: 'ape',
+    path: join(empty, 'not-found.txt'),
+    raiseOnNoMatch: false,
+  }),
+  (error) => error instanceof APEProcessError && error.result.returnCode === 2,
+);
+
 await assert.rejects(
   () => search({ pattern: 'ape', path: directory, raw: ['ape', directory] }),
   TypeError,

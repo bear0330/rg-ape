@@ -1,16 +1,19 @@
 import apebind.generated.rg_ape.APEProcessException;
 import apebind.generated.rg_ape.RgAPEBinding;
 
+import rg_ape.SearchClient;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 public class RgSmoke {
     public static void main(String[] args) throws Exception {
+        SearchClient client = new SearchClient();
         Path directory = Files.createTempDirectory("rg-ape-");
         Files.writeString(directory.resolve("note.txt"), "alpha ape\nbeta\n");
 
-        String text = RgAPEBinding.search(
+        String text = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("ape")
                 .path(directory)
@@ -20,7 +23,7 @@ public class RgSmoke {
 
         Path duplicates = Files.createTempDirectory("rg-ape-");
         Files.writeString(duplicates.resolve("dup.txt"), "ape ape\nbeta\n");
-        String backreference = RgAPEBinding.search(
+        String backreference = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("(\\w+) \\1")
                 .path(duplicates)
@@ -31,7 +34,7 @@ public class RgSmoke {
 
         Path literals = Files.createTempDirectory("rg-ape-");
         Files.writeString(literals.resolve("lit.txt"), "abc\na.c\n");
-        String fixed = RgAPEBinding.search(
+        String fixed = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("a.c")
                 .path(literals)
@@ -43,7 +46,7 @@ public class RgSmoke {
 
         Path words = Files.createTempDirectory("rg-ape-");
         Files.writeString(words.resolve("words.txt"), "alpha ape\napex\n");
-        String word = RgAPEBinding.search(
+        String word = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("ape")
                 .path(words)
@@ -55,21 +58,21 @@ public class RgSmoke {
 
         Path lines = Files.createTempDirectory("rg-ape-");
         Files.writeString(lines.resolve("note.txt"), "one\ntwo\nthree\nfour\n");
-        String after = RgAPEBinding.search(
+        String after = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("two")
                 .path(lines)
                 .lineNumber(true)
                 .afterContext(1L)
                 .build());
-        String before = RgAPEBinding.search(
+        String before = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("two")
                 .path(lines)
                 .lineNumber(true)
                 .beforeContext(1L)
                 .build());
-        String context = RgAPEBinding.search(
+        String context = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("two")
                 .path(lines)
@@ -85,7 +88,7 @@ public class RgSmoke {
         Path typed = Files.createTempDirectory("rg-ape-");
         Files.writeString(typed.resolve("code.py"), "needle\n");
         Files.writeString(typed.resolve("code.txt"), "needle\n");
-        String pyOnly = RgAPEBinding.search(
+        String pyOnly = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("needle")
                 .path(typed)
@@ -97,7 +100,7 @@ public class RgSmoke {
 
         Path inverted = Files.createTempDirectory("rg-ape-");
         Files.writeString(inverted.resolve("note.txt"), "alpha ape\nbeta\n");
-        String other = RgAPEBinding.search(
+        String other = client.search(
             RgAPEBinding.SearchParameters.builder()
                 .pattern("ape")
                 .path(inverted)
@@ -107,43 +110,44 @@ public class RgSmoke {
         require(other.contains("note.txt:2:beta"), other);
         require(!other.contains("alpha ape"), other);
 
-        String rawText = RgAPEBinding.search(List.of("-n", "-F", "a.c", literals.toString()));
-        String rawBuilder = RgAPEBinding.search(
-            RgAPEBinding.SearchParameters.builder()
-                .raw(List.of("-n", "-F", "a.c", literals.toString()))
-                .build());
+        String rawText = client.search(List.of("-n", "-F", "a.c", literals.toString()));
+        String rawWithoutException = client.search(
+            List.of("-n", "-F", "a.c", literals.toString()),
+            false);
         require(rawText.equals(fixed), rawText);
-        require(rawBuilder.equals(fixed), rawBuilder);
+        require(rawWithoutException.equals(fixed), rawWithoutException);
 
         boolean noMatch = false;
         try {
-            RgAPEBinding.search(List.of("missing-token", directory.toString()));
+            client.search(List.of("missing-token", directory.toString()));
         } catch (APEProcessException expected) {
             noMatch = true;
         }
         require(noMatch, "raw no-match should raise");
 
-        boolean both = false;
-        try {
+        String emptyNamed = client.search(
             RgAPEBinding.SearchParameters.builder()
-                .pattern("ape")
-                .raw(List.of("ape", directory.toString()))
-                .build();
-        } catch (IllegalArgumentException expected) {
-            both = true;
-        }
-        require(both, "pattern and raw should raise");
+                .pattern("missing-token")
+                .path(directory)
+                .build(),
+            false);
+        String emptyRaw = client.search(
+            List.of("missing-token", directory.toString()),
+            false);
+        require(emptyNamed.isEmpty(), emptyNamed);
+        require(emptyRaw.isEmpty(), emptyRaw);
 
-        boolean explicitFalse = false;
+        boolean failedPath = false;
         try {
-            RgAPEBinding.SearchParameters.builder()
-                .lineNumber(false)
-                .raw(List.of("-n", "ape", directory.toString()))
-                .build();
-        } catch (IllegalArgumentException expected) {
-            explicitFalse = true;
+            client.search(
+                List.of("ape", directory.resolve("not-found.txt").toString()),
+                false);
+        } catch (APEProcessException error) {
+            require(error.result().returnCode() == 2, error.getMessage());
+            failedPath = true;
         }
-        require(explicitFalse, "an explicit false flag and raw should raise");
+        require(failedPath, "execution errors must still raise");
+
     }
 
     private static void require(boolean condition, String actual) {

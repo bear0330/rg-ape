@@ -107,6 +107,32 @@ class RgApeTests(unittest.TestCase):
             with self.assertRaises(APEProcessError):
                 search(raw=["missing-token", directory])
 
+    def test_no_match_can_return_empty(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            note = Path(directory) / "note.txt"
+            note.write_text("beta\n", encoding="utf-8")
+
+            self.assertEqual(
+                search("missing-token", directory, raise_on_no_match=False),
+                "",
+            )
+            self.assertEqual(
+                search(raw=["missing-token", directory], raise_on_no_match=False),
+                "",
+            )
+            self.assertEqual(
+                search(["missing-token", directory], raise_on_no_match=False),
+                "",
+            )
+
+    def test_execution_error_is_not_suppressed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            missing_path = Path(directory) / "not-found.txt"
+            with self.assertRaises(APEProcessError) as caught:
+                search("ape", missing_path, raise_on_no_match=False)
+
+        self.assertEqual(caught.exception.result.return_code, 2)
+
     def test_parameters_and_raw_together_raise(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             note = Path(directory) / "note.txt"

@@ -41,6 +41,12 @@ npm install https://github.com/bear0330/rg-ape/releases/download/v0.2.0/rg-ape-0
 
 The Node package is ESM. Import it from a `.mjs` file, or set `"type": "module"`.
 
+**Release compatibility:** The v0.2.0 artifacts above predate the semantic
+layer refactor and do not include `raise_on_no_match`, `raiseOnNoMatch`, or the
+Java `rg_ape.SearchClient`. The examples below describe the current source.
+Until a new version is released, use the original v0.2.0 APIs when installing
+those release assets.
+
 ```sh
 curl -fsSL -o rg-ape-0.2.0.jar https://github.com/bear0330/rg-ape/releases/download/v0.2.0/rg-ape-0.2.0.jar
 javac --release 17 -cp rg-ape-0.2.0.jar Example.java
@@ -73,9 +79,10 @@ Java:
 
 ```java
 import apebind.generated.rg_ape.RgAPEBinding;
+import rg_ape.SearchClient;
 import java.nio.file.Path;
 
-String text = RgAPEBinding.search(
+String text = new SearchClient().search(
     RgAPEBinding.SearchParameters.builder()
         .pattern("ape")
         .path(Path.of("notes"))
@@ -99,12 +106,13 @@ console.log(await search({ raw: ['-n', '-F', 'a.c', 'notes'] }));
 ```
 
 ```java
-RgAPEBinding.search(List.of("-n", "-F", "a.c", "notes"));
+new SearchClient().search(List.of("-n", "-F", "a.c", "notes"));
 ```
 
 An explicit false flag still counts as a named parameter, so
-`search(raw=["ape"], line_number=False)` raises too. Java does the same when
-`lineNumber(false)` is combined with `raw` on the builder.
+`search(raw=["ape"], line_number=False)` raises too. Java uses separate
+`SearchClient.search(SearchParameters)` and `SearchClient.search(List)`
+overloads, so named flags cannot accidentally mix with raw argv.
 
 Named parameters are `ignore_case`, `line_number`, `files_with_matches`,
 `json`, `glob`, `hidden`, `no_ignore`, `pcre2`, `fixed_strings`,
@@ -122,6 +130,34 @@ result. A raw-style `search` returns the same stripped text as the named
 call. Each binding's `prepare` script copies the root `rg.com` into the
 package before the call above can run from this tree.
 
+## No-match behavior
+
+By default `search` raises when ripgrep exits with code 1 (no matches).
+Set `raise_on_no_match=False` in Python or `raiseOnNoMatch: false` in
+Node.js to receive an empty string instead. Java accepts a second
+`raiseOnNoMatch` boolean argument:
+
+```python
+search("missing", "notes", raise_on_no_match=False)
+search(raw=["missing", "notes"], raise_on_no_match=False)
+```
+
+```js
+await search({ pattern: 'missing', path: 'notes', raiseOnNoMatch: false });
+await search(['missing', 'notes'], { raiseOnNoMatch: false });
+```
+
+```java
+new SearchClient().search(
+    RgAPEBinding.SearchParameters.builder()
+        .pattern("missing")
+        .path(Path.of("notes"))
+        .build(),
+    false);
+```
+
+Other nonzero exits (such as an invalid path, exit code 2) still raise.
+
 ## Build `rg.com`
 
 `rg.com` is produced by [rust-ape](https://github.com/bear0330/rust-ape).
@@ -133,28 +169,17 @@ bash ./.github/scripts/collectbuild cli/rg
 
 That writes `results/bin/rg.com`. Copy it here as `rg.com`, or publish that
 same file as the `rg.com` asset on a GitHub release. This repository then
-uses the finished binary. Regenerate the bindings with the APEBind binary in
-[apebind/dist](../apebind/dist/apebind.com):
+uses the finished binary. Regenerate the low-level bindings with APEBind (in `PATH`, or set
+`APEBIND_BIN` to the executable):
 
 ```sh
-../apebind/dist/apebind.com validate rg.apebind.yaml
-../apebind/dist/apebind.com generate rg.apebind.yaml \
-  --ape rg.com --lang python -o bindings/python
-../apebind/dist/apebind.com generate rg.apebind.yaml \
-  --ape rg.com --lang node -o bindings/node
-../apebind/dist/apebind.com generate rg.apebind.yaml \
-  --ape rg.com --lang java -o bindings/java
+./scripts/regenerate.sh
 ```
 
-Regenerating replaces the generated sources under `bindings/`, including
-`bindings/python/README.md`, `bindings/node/README.md`, and
-`bindings/java/README.md`. It also resets `pyproject.toml`, `package.json`,
-and `pom.xml` to version 0.1.0, and restores the generated `search` export in
-`bindings/python/src/rg_ape/__init__.py`, `bindings/node/src/index.js`,
-`bindings/node/src/index.d.ts`, and `RgAPEBinding.java`. Point Python and
-Node `search` back at `search_call`, reapply the Java raw overload plus the
-builder guard, and put the binding README usage back, before committing. The
-tests live outside those generated trees.
+This validates [rg.apebind.yaml](rg.apebind.yaml), generates into a temporary
+directory, and copies only APEBind-owned runtime and generated client files.
+Handwritten semantic APIs, public exports, version metadata, and documentation
+are preserved. The separation is documented in [bindings/README.md](bindings/README.md).
 
 ## Test
 
