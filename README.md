@@ -120,13 +120,14 @@ uses the finished binary. Regenerate the bindings with the APEBind binary in
   --ape rg.com --lang java -o bindings/java
 ```
 
-Regenerating replaces the generated sources under `bindings/`. It also
-restores the generated `search` export in
+Regenerating replaces the generated sources under `bindings/`, including
+`bindings/python/README.md`, `bindings/node/README.md`, and
+`bindings/java/README.md`. It also restores the generated `search` export in
 `bindings/python/src/rg_ape/__init__.py`, `bindings/node/src/index.js`,
 `bindings/node/src/index.d.ts`, and `RgAPEBinding.java`. Point Python and
-Node `search` back at `search_call`, and reapply the Java raw overload plus
-the builder guard, before committing. The tests live outside those generated
-trees.
+Node `search` back at `search_call`, reapply the Java raw overload plus the
+builder guard, and put the binding README usage back, before committing. The
+tests live outside those generated trees.
 
 ## Test
 
