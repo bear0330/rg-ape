@@ -1,6 +1,6 @@
 # rg-ape
 
-ripgrep 14.1.1 as a portable CLI, and from Python, Node.js, or Java.
+ripgrep 15.2.0 as a portable CLI, and from Python, Node.js, or Java.
 
 `rg-ape` takes a finished Cosmopolitan `rg.com` and exposes the same search
 through language-native bindings generated with

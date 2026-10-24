@@ -41,7 +41,7 @@ class RgComTests(unittest.TestCase):
         result = self.run_rg("--version")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("ripgrep 14.1.1", result.stdout)
+        self.assertIn("ripgrep 15.2.0", result.stdout)
 
     def test_search_prints_the_matching_line(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
