@@ -13,6 +13,10 @@ language-native bindings generated with
 [APEBind](https://github.com/nuwainfo/apebind). This repository does not build
 `rg.com`.
 
+<p align="center">
+  <img src="assets/rg-ape-banner.webp" alt="rg-ape: ripgrep as an Actually Portable Executable, with Python, Node.js, and Java bindings" width="960" />
+</p>
+
 ## Use `rg.com`
 
 The release asset is the finished binary. Download the latest
